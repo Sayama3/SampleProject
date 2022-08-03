@@ -1,2 +1,2 @@
 # SampleProject
- Some sample test project
+This is a Unity SampleProject to test the CI inside Github
