@@ -4,9 +4,12 @@ on:
   push:
     branches:
       - "main"
+    tags:
+      - "v*.*"
   pull_request:
     branches:
       - "main"
+  workflow_dispatch: {}
 
 jobs:
   buildForAllSupportedPlatforms:
@@ -30,11 +33,70 @@ jobs:
           key: Library-${{ matrix.targetPlatform }}
           restore-keys: Library-
       - uses: game-ci/unity-builder@v2
+        id: buildStep
         env:
           UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
         with:
           targetPlatform: ${{ matrix.targetPlatform }}
+          buildName: ${{secrets.GAME_NAME}}
+          versioning: Semantic
       - uses: actions/upload-artifact@v3
         with:
-          name: Build-${{ matrix.targetPlatform }}
-          path: build/${{ matrix.targetPlatform }}
+          name: ${{secrets.GAME_NAME}}-${{ matrix.targetPlatform }}-${{steps.buildStep.outputs.buildVersion}}
+          path: |
+            build/${{ matrix.targetPlatform }}
+            !build/${{ matrix.targetPlatform }}/*DoNotShip*/
+      - name: WriteVersion
+        run: sudo echo "${{steps.buildStep.outputs.buildVersion}}" > build/version
+      - uses: actions/upload-artifact@v3
+        with:
+          name: version
+          path: build/version
+
+  releaseToGihub:
+    runs-on: ubuntu-latest
+    needs: [buildForAllSupportedPlatforms]
+    steps:
+      - name: Download Version Artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: version
+          path: build/version
+      - name: version
+        id: version
+        uses: juliangruber/read-file-action@v1
+        with:
+          path: build/version
+
+      - name: Download StandaloneWindows64 Artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: ${{secrets.GAME_NAME}}-StandaloneWindows64-${{steps.version.outputs.content}}
+          path: build/${{secrets.GAME_NAME}}_StandaloneWindows64
+
+      - name: Download StandaloneLinux64 Artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: ${{secrets.GAME_NAME}}-StandaloneLinux64-${{steps.version.outputs.content}}
+          path: build/${{secrets.GAME_NAME}}_StandaloneLinux64
+
+      - name: Download StandaloneOSX Artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: ${{secrets.GAME_NAME}}-StandaloneOSX-${{steps.version.outputs.content}}
+          path: build/${{secrets.GAME_NAME}}_StandaloneOSX
+
+###      NON CONLUENT RELEASE METHOD      ###
+#      - name: Release
+#        uses: softprops/action-gh-release@v1
+#        with:
+#          files: |
+#            build/${{secrets.GAME_NAME}}_StandaloneWindows64
+#            build/${{secrets.GAME_NAME}}_StandaloneLinux64
+#            build/${{secrets.GAME_NAME}}_StandaloneOSX
+
+      - uses: ncipollo/release-action@v1
+        with:
+          name: ${{secrets.GAME_NAME}}-${{steps.version.outputs.content}}
+          tag: ${{steps.version.outputs.content}}
+          artifacts: "build/${{secrets.GAME_NAME}}_StandaloneWindows64,build/${{secrets.GAME_NAME}}_StandaloneLinux64,build/${{secrets.GAME_NAME}}_StandaloneOSX"
