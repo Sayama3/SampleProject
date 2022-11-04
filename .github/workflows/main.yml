@@ -46,8 +46,11 @@ jobs:
           path: |
             build/${{ matrix.targetPlatform }}
             !build/${{ matrix.targetPlatform }}/*DoNotShip*/
-      - name: WriteVersion
-        run: sudo echo "${{steps.buildStep.outputs.buildVersion}}" > build/version
+      - uses: DamianReeves/write-file-action@master
+        with:
+          path: build/version
+          contents: ${{steps.buildStep.outputs.buildVersion}}
+          write-mode: overwrite
       - uses: actions/upload-artifact@v3
         with:
           name: version
