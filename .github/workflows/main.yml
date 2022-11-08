@@ -63,13 +63,12 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: version
-          path: build/version
+          path: ./version
       - name: version
         id: version
         uses: juliangruber/read-file-action@v1
         with:
-          path: build/version
-
+          path: ./version
       - name: Download StandaloneWindows64 Artifact
         uses: actions/download-artifact@v3
         with:
