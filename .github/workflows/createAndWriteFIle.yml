@@ -23,6 +23,10 @@ jobs:
           - StandaloneWindows64 # Build a Windows 64-bit standalone.
           - StandaloneLinux64 # Build a Linux 64-bit standalone.
     steps:
+      - name: Create Folder
+        run: mkdir build/
+      - name: Try recreate an exisiting folder
+        run: mkdir build/
       - name: Create File
         run: touch build/version
       - name: Write File
