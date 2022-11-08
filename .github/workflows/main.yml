@@ -1,14 +1,14 @@
 name: Build Sample Project
 
 on:
-#  push:
-#    branches:
-#      - "main"
-#    tags:
-#      - "v*.*"
-#  pull_request:
-#    branches:
-#      - "main"
+  push:
+    branches:
+      - "main"
+    tags:
+      - "v*.*"
+  pull_request:
+    branches:
+      - "main"
   workflow_dispatch: {}
 
 jobs:
@@ -46,16 +46,14 @@ jobs:
           path: |
             build/${{ matrix.targetPlatform }}
             !build/${{ matrix.targetPlatform }}/*DoNotShip*/
-      - name: Create folder for the version file
-        run: mkdir -p build/
       - name: Create version file
-        run: touch build/version
-      - name: Write version in the version file
-        run: echo "${{steps.buildStep.outputs.buildVersion}}" > build/version
+        run: touch version
+      - name: Write game version in the version file
+        run: echo "${{steps.buildStep.outputs.buildVersion}}" > version
       - uses: actions/upload-artifact@v3
         with:
           name: version
-          path: build/version
+          path: version
 
   releaseToGihub:
     runs-on: ubuntu-latest
