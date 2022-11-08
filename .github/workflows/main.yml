@@ -46,11 +46,12 @@ jobs:
           path: |
             build/${{ matrix.targetPlatform }}
             !build/${{ matrix.targetPlatform }}/*DoNotShip*/
-      - uses: DamianReeves/write-file-action@master
-        with:
-          path: build/version
-          contents: ${{steps.buildStep.outputs.buildVersion}}
-          write-mode: overwrite
+      - name: Create folder for the version file
+        run: mkdir -p build/
+      - name: Create version file
+        run: touch build/version
+      - name: Write version in the version file
+        run: echo "${{steps.buildStep.outputs.buildVersion}}" > build/version
       - uses: actions/upload-artifact@v3
         with:
           name: version
