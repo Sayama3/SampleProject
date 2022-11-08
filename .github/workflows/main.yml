@@ -64,40 +64,42 @@ jobs:
         with:
           name: version
           path: ./version
-      - name: version
-        id: version
-        uses: juliangruber/read-file-action@v1
-        with:
-          path: ./version
-      - name: Download StandaloneWindows64 Artifact
-        uses: actions/download-artifact@v3
-        with:
-          name: ${{secrets.GAME_NAME}}-StandaloneWindows64-${{steps.version.outputs.content}}
-          path: build/${{secrets.GAME_NAME}}_StandaloneWindows64
-
-      - name: Download StandaloneLinux64 Artifact
-        uses: actions/download-artifact@v3
-        with:
-          name: ${{secrets.GAME_NAME}}-StandaloneLinux64-${{steps.version.outputs.content}}
-          path: build/${{secrets.GAME_NAME}}_StandaloneLinux64
-
-      - name: Download StandaloneOSX Artifact
-        uses: actions/download-artifact@v3
-        with:
-          name: ${{secrets.GAME_NAME}}-StandaloneOSX-${{steps.version.outputs.content}}
-          path: build/${{secrets.GAME_NAME}}_StandaloneOSX
-
-###      NON CONLUENT RELEASE METHOD      ###
-#      - name: Release
-#        uses: softprops/action-gh-release@v1
+      - name: Display structure of downloaded files
+        run: ls -R
+#      - name: Read version file
+#        id: version
+#        uses: juliangruber/read-file-action@v1
 #        with:
-#          files: |
-#            build/${{secrets.GAME_NAME}}_StandaloneWindows64
-#            build/${{secrets.GAME_NAME}}_StandaloneLinux64
-#            build/${{secrets.GAME_NAME}}_StandaloneOSX
-
-      - uses: ncipollo/release-action@v1
-        with:
-          name: ${{secrets.GAME_NAME}}-${{steps.version.outputs.content}}
-          tag: ${{steps.version.outputs.content}}
-          artifacts: "build/${{secrets.GAME_NAME}}_StandaloneWindows64,build/${{secrets.GAME_NAME}}_StandaloneLinux64,build/${{secrets.GAME_NAME}}_StandaloneOSX"
+#          path: ./version
+#      - name: Download StandaloneWindows64 Artifact
+#        uses: actions/download-artifact@v3
+#        with:
+#          name: ${{secrets.GAME_NAME}}-StandaloneWindows64-${{steps.version.outputs.content}}
+#          path: build/${{secrets.GAME_NAME}}_StandaloneWindows64
+#
+#      - name: Download StandaloneLinux64 Artifact
+#        uses: actions/download-artifact@v3
+#        with:
+#          name: ${{secrets.GAME_NAME}}-StandaloneLinux64-${{steps.version.outputs.content}}
+#          path: build/${{secrets.GAME_NAME}}_StandaloneLinux64
+#
+#      - name: Download StandaloneOSX Artifact
+#        uses: actions/download-artifact@v3
+#        with:
+#          name: ${{secrets.GAME_NAME}}-StandaloneOSX-${{steps.version.outputs.content}}
+#          path: build/${{secrets.GAME_NAME}}_StandaloneOSX
+#
+####      NON CONLUENT RELEASE METHOD      ###
+##      - name: Release
+##        uses: softprops/action-gh-release@v1
+##        with:
+##          files: |
+##            build/${{secrets.GAME_NAME}}_StandaloneWindows64
+##            build/${{secrets.GAME_NAME}}_StandaloneLinux64
+##            build/${{secrets.GAME_NAME}}_StandaloneOSX
+#
+#      - uses: ncipollo/release-action@v1
+#        with:
+#          name: ${{secrets.GAME_NAME}}-${{steps.version.outputs.content}}
+#          tag: ${{steps.version.outputs.content}}
+#          artifacts: "build/${{secrets.GAME_NAME}}_StandaloneWindows64,build/${{secrets.GAME_NAME}}_StandaloneLinux64,build/${{secrets.GAME_NAME}}_StandaloneOSX"
