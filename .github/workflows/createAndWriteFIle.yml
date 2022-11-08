@@ -1,0 +1,34 @@
+name: Create and Write a File
+
+on:
+  push:
+    branches:
+      - "main"
+#    tags:
+#      - "v*.*"
+#  pull_request:
+#    branches:
+#      - "main"
+  workflow_dispatch: {}
+
+jobs:
+  createAndWrite:
+    name: Build for ${{ matrix.targetPlatform }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        targetPlatform:
+          - StandaloneOSX # Build a macOS standalone (Intel 64-bit).
+          - StandaloneWindows64 # Build a Windows 64-bit standalone.
+          - StandaloneLinux64 # Build a Linux 64-bit standalone.
+    steps:
+      - name: Create File
+        run: touch build/version
+      - name: Write File
+        run: echo "1.0.0" > build/version
+      - uses: actions/upload-artifact@v3
+        name: Upload Version File
+        with:
+          name: version
+          path: build/version
