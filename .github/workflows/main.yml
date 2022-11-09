@@ -63,14 +63,16 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: version
-          path: ./version
+          path: ./version-artifact
       - name: Display structure of downloaded files
         run: ls -R
+      - name: Display content of version file
+        run: cat ./version-artifact/version
 #      - name: Read version file
 #        id: version
 #        uses: juliangruber/read-file-action@v1
 #        with:
-#          path: ./version
+#          path: ./version/version
 #      - name: Download StandaloneWindows64 Artifact
 #        uses: actions/download-artifact@v3
 #        with:
