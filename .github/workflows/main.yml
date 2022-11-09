@@ -87,6 +87,16 @@ jobs:
           name: ${{secrets.GAME_NAME}}-StandaloneOSX-${{steps.version.outputs.content}}
           path: build/${{secrets.GAME_NAME}}_StandaloneOSX
 
+      - name: Install ZIP
+        run: sudo apt install zip
+
+      - name: ZIP Windows Build
+        run: zip -r build/${{secrets.GAME_NAME}}-StandaloneWindows64-${{steps.version.outputs.content}}.zip build/${{secrets.GAME_NAME}}_StandaloneWindows64
+      - name: ZIP macOS Build
+        run: zip -r build/${{secrets.GAME_NAME}}-StandaloneOSX-${{steps.version.outputs.content}}.zip build/${{secrets.GAME_NAME}}_StandaloneOSX
+      - name: Compress linux Build
+        run: tar -zcvf build/${{secrets.GAME_NAME}}-StandaloneLinux64-${{steps.version.outputs.content}}.tar.gz build/${{secrets.GAME_NAME}}_StandaloneLinux64
+
 ###      NON CONLUENT RELEASE METHOD      ###
 #      - name: Release
 #        uses: softprops/action-gh-release@v1
@@ -100,4 +110,4 @@ jobs:
         with:
           name: ${{secrets.GAME_NAME}}-${{steps.version.outputs.content}}
           tag: ${{steps.version.outputs.content}}
-          artifacts: "build/${{secrets.GAME_NAME}}_StandaloneWindows64,build/${{secrets.GAME_NAME}}_StandaloneLinux64,build/${{secrets.GAME_NAME}}_StandaloneOSX"
+          artifacts: "build/${{secrets.GAME_NAME}}-StandaloneWindows64-${{steps.version.outputs.content}}.zip,build/${{secrets.GAME_NAME}}-StandaloneOSX-${{steps.version.outputs.content}}.zip,build/${{secrets.GAME_NAME}}-StandaloneLinux64-${{steps.version.outputs.content}}.tar.gz"
